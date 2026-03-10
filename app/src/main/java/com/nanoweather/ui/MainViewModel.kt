@@ -65,17 +65,32 @@ class MainViewModel(
         }
     }
 
+    fun onShowSearch() {
+        _uiState.update { it.copy(isSearchVisible = true) }
+    }
+
+    fun onDismissSearch() {
+        searchJob?.cancel()
+        _uiState.update {
+            it.copy(isSearchVisible = false, searchQuery = "", searchResults = emptyList())
+        }
+    }
+
     fun onCitySelected(city: City) {
         viewModelScope.launch {
             cityRepository.addCity(city)
             _uiState.update { state ->
                 val alreadyExists = state.cities.any { it.city.id == city.id }
                 if (alreadyExists) {
-                    state.copy(searchQuery = "", searchResults = emptyList())
+                    state.copy(
+                        searchQuery = "", searchResults = emptyList(),
+                        isSearchVisible = false
+                    )
                 } else {
                     state.copy(
                         searchQuery = "",
                         searchResults = emptyList(),
+                        isSearchVisible = false,
                         cities = state.cities + CityWeatherState(city = city)
                     )
                 }

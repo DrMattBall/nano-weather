@@ -1,5 +1,6 @@
 package com.nanoweather.ui.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,8 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +39,10 @@ fun WeatherScreen(viewModel: MainViewModel) {
     val context = LocalContext.current
     val imageProvider: CityImageProvider = remember {
         ResourceCityImageProvider(context.resources, context.packageName)
+    }
+
+    BackHandler(enabled = uiState.isSearchVisible) {
+        viewModel.onDismissSearch()
     }
 
     Scaffold { innerPadding ->
@@ -70,8 +79,15 @@ fun WeatherScreen(viewModel: MainViewModel) {
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+                    IconButton(onClick = viewModel::onShowSearch) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Add city"
+                        )
+                    }
                     TextButton(onClick = viewModel::onToggleTemperatureUnit) {
                         Text(
                             text = if (uiState.temperatureUnit == TemperatureUnit.CELSIUS) "°C" else "°F",
@@ -81,18 +97,20 @@ fun WeatherScreen(viewModel: MainViewModel) {
                 }
             }
 
-            item {
-                CitySearchBar(
-                    query = uiState.searchQuery,
-                    searchResults = uiState.searchResults,
-                    isSearching = uiState.isSearching,
-                    onQueryChanged = viewModel::onSearchQueryChanged,
-                    onCitySelected = viewModel::onCitySelected,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            if (uiState.isSearchVisible) {
+                item {
+                    CitySearchBar(
+                        query = uiState.searchQuery,
+                        searchResults = uiState.searchResults,
+                        isSearching = uiState.isSearching,
+                        onQueryChanged = viewModel::onSearchQueryChanged,
+                        onCitySelected = viewModel::onCitySelected,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
 
-            if (uiState.cities.isEmpty()) {
+            if (uiState.cities.isEmpty() && !uiState.isSearchVisible) {
                 item {
                     Box(
                         modifier = Modifier
@@ -101,7 +119,7 @@ fun WeatherScreen(viewModel: MainViewModel) {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Search for a city to get started",
+                            text = "Tap + to add a city",
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
