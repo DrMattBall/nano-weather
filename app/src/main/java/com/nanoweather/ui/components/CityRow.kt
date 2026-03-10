@@ -33,7 +33,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.nanoweather.ui.CityWeatherState
 import com.nanoweather.ui.TemperatureUnit
-import java.util.Locale
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -235,5 +234,5 @@ private fun formatTemp(celsius: Double?, unit: TemperatureUnit): String {
 
 private fun formatUv(value: Double?): String {
     if (value == null) return "--"
-    return String.format(Locale.US, "%.1f", value)
+    return value.roundToInt().toString()
 }
