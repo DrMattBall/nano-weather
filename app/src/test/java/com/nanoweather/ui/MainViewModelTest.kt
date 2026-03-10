@@ -88,16 +88,6 @@ class MainViewModelTest {
     }
 
     @Test
-    fun `onCityRemoved removes city from state`() = runTest {
-        fakeCityRepo.cities.add(london)
-        val vm = createViewModel()
-
-        vm.onCityRemoved(london.id)
-
-        assertTrue(vm.uiState.value.cities.isEmpty())
-    }
-
-    @Test
     fun `onCityToggled toggles expanded state`() = runTest {
         fakeCityRepo.cities.add(london)
         val vm = createViewModel()
@@ -107,5 +97,43 @@ class MainViewModelTest {
 
         vm.onCityToggled(london.id)
         assertTrue(!vm.uiState.value.cities[0].isExpanded)
+    }
+
+    @Test
+    fun `long press enters selection mode and selects city`() = runTest {
+        fakeCityRepo.cities.add(london)
+        val vm = createViewModel()
+
+        vm.onEnterSelectionMode()
+        vm.onToggleSelection(london.id)
+
+        assertTrue(vm.uiState.value.isSelectionMode)
+        assertTrue(vm.uiState.value.cities[0].isSelected)
+    }
+
+    @Test
+    fun `onRemoveSelected removes selected cities and exits selection mode`() = runTest {
+        fakeCityRepo.cities.add(london)
+        val vm = createViewModel()
+
+        vm.onEnterSelectionMode()
+        vm.onToggleSelection(london.id)
+        vm.onRemoveSelected()
+
+        assertTrue(vm.uiState.value.cities.isEmpty())
+        assertTrue(!vm.uiState.value.isSelectionMode)
+    }
+
+    @Test
+    fun `onExitSelectionMode clears selections`() = runTest {
+        fakeCityRepo.cities.add(london)
+        val vm = createViewModel()
+
+        vm.onEnterSelectionMode()
+        vm.onToggleSelection(london.id)
+        vm.onExitSelectionMode()
+
+        assertTrue(!vm.uiState.value.isSelectionMode)
+        assertTrue(!vm.uiState.value.cities[0].isSelected)
     }
 }

@@ -84,11 +84,44 @@ class MainViewModel(
         }
     }
 
-    fun onCityRemoved(cityId: Int) {
+    fun onEnterSelectionMode() {
+        _uiState.update { it.copy(isSelectionMode = true) }
+    }
+
+    fun onExitSelectionMode() {
+        _uiState.update { state ->
+            state.copy(
+                isSelectionMode = false,
+                cities = state.cities.map { it.copy(isSelected = false) }
+            )
+        }
+    }
+
+    fun onToggleSelection(cityId: Int) {
+        _uiState.update { state ->
+            state.copy(
+                cities = state.cities.map { cityState ->
+                    if (cityState.city.id == cityId) {
+                        cityState.copy(isSelected = !cityState.isSelected)
+                    } else {
+                        cityState
+                    }
+                }
+            )
+        }
+    }
+
+    fun onRemoveSelected() {
         viewModelScope.launch {
-            cityRepository.removeCity(cityId)
+            val selectedIds = _uiState.value.cities
+                .filter { it.isSelected }
+                .map { it.city.id }
+            selectedIds.forEach { cityRepository.removeCity(it) }
             _uiState.update { state ->
-                state.copy(cities = state.cities.filter { it.city.id != cityId })
+                state.copy(
+                    isSelectionMode = false,
+                    cities = state.cities.filter { it.city.id !in selectedIds }
+                )
             }
         }
     }

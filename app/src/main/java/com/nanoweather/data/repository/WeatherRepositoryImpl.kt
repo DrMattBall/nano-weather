@@ -5,9 +5,12 @@ import com.nanoweather.domain.model.CityWeather
 import com.nanoweather.domain.model.CurrentWeather
 import com.nanoweather.domain.model.DailyForecast
 import com.nanoweather.domain.model.HourlyForecast
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class WeatherRepositoryImpl(
-    private val api: WeatherApiService
+    private val api: WeatherApiService,
+    private val clock: () -> LocalDateTime = { LocalDateTime.now() }
 ) : WeatherRepository {
 
     override suspend fun getWeather(latitude: Double, longitude: Double): Result<CityWeather> =
@@ -24,13 +27,22 @@ class WeatherRepositoryImpl(
                 lowTemp = response.daily.temperatureMin.first()
             )
 
-            val hourly = response.hourly.time.mapIndexed { index, time ->
+            val allHourly = response.hourly.time.mapIndexed { index, time ->
                 HourlyForecast(
                     time = time,
                     temperature = response.hourly.temperature[index],
                     precipitation = response.hourly.precipitation[index]
                 )
             }
+
+            val now = clock()
+            val currentHour = now.withMinute(0).withSecond(0).withNano(0)
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
+            val cutoff = currentHour.format(formatter)
+
+            val hourly = allHourly
+                .filter { it.time >= cutoff }
+                .take(24)
 
             CityWeather(current = current, daily = daily, hourly = hourly)
         }

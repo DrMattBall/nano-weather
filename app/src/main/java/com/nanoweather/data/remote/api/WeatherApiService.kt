@@ -12,7 +12,7 @@ interface WeatherApiService {
         @Query("current_weather") currentWeather: Boolean = true,
         @Query("daily") daily: String = "temperature_2m_max,temperature_2m_min",
         @Query("hourly") hourly: String = "temperature_2m,precipitation",
-        @Query("forecast_days") forecastDays: Int = 1,
+        @Query("forecast_days") forecastDays: Int = 2,
         @Query("timezone") timezone: String = "auto"
     ): WeatherResponseDto
 }
