@@ -240,6 +240,24 @@ class MainViewModel(
         }
     }
 
+    fun onRefresh() {
+        viewModelScope.launch {
+            _uiState.update { state ->
+                state.copy(
+                    isRefreshing = true,
+                    cities = state.cities.map { it.copy(radarMapData = null, airQuality = null) }
+                )
+            }
+            refreshAllWeather()
+            // Re-fetch radar and air quality for any expanded cities
+            _uiState.value.cities.filter { it.isExpanded }.forEach { cityState ->
+                fetchRadarForCity(cityState.city)
+                fetchAirQualityForCity(cityState.city)
+            }
+            _uiState.update { it.copy(isRefreshing = false) }
+        }
+    }
+
     private suspend fun refreshAllWeather() {
         val cities = _uiState.value.cities.map { it.city }
         val deferreds = cities.map { city ->

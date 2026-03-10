@@ -35,5 +35,6 @@ data class MainUiState(
     val isSelectionMode: Boolean = false,
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     val isSearchVisible: Boolean = false,
-    val contrastBubbles: Boolean = false
+    val contrastBubbles: Boolean = false,
+    val isRefreshing: Boolean = false
 )
