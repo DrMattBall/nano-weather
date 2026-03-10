@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.nanoweather.ui.CityWeatherState
+import com.nanoweather.ui.TemperatureUnit
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -34,6 +35,7 @@ import kotlin.math.roundToInt
 fun CityRow(
     state: CityWeatherState,
     isSelectionMode: Boolean,
+    temperatureUnit: TemperatureUnit,
     backgroundImageResId: Int?,
     onToggle: () -> Unit,
     onLongPress: () -> Unit,
@@ -92,14 +94,21 @@ fun CityRow(
                         )
                         if (!state.isLoading && state.error == null) {
                             Text(
-                                text = "${state.currentTemp?.roundToInt() ?: "--"}°",
+                                text = "${formatTemp(state.currentTemp, temperatureUnit)}°",
                                 style = MaterialTheme.typography.headlineSmall
                             )
-                            Text(
-                                text = "H:${state.highTemp?.roundToInt() ?: "--"}° L:${state.lowTemp?.roundToInt() ?: "--"}°",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                            Column {
+                                Text(
+                                    text = "H: ${formatTemp(state.highTemp, temperatureUnit)}°",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                Text(
+                                    text = "L: ${formatTemp(state.lowTemp, temperatureUnit)}°",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
                     }
 
@@ -134,6 +143,7 @@ fun CityRow(
                 if (state.isExpanded && !state.isLoading && state.error == null) {
                     HourlyTimeline(
                         forecasts = state.hourlyForecasts,
+                        temperatureUnit = temperatureUnit,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 12.dp)
@@ -142,6 +152,15 @@ fun CityRow(
             }
         }
     }
+}
+
+private fun formatTemp(celsius: Double?, unit: TemperatureUnit): String {
+    if (celsius == null) return "--"
+    val value = when (unit) {
+        TemperatureUnit.CELSIUS -> celsius
+        TemperatureUnit.FAHRENHEIT -> celsius * 9.0 / 5.0 + 32.0
+    }
+    return value.roundToInt().toString()
 }
 
 private fun formatUv(value: Double?): String {

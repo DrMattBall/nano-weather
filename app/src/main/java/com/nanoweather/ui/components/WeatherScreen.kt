@@ -26,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nanoweather.data.local.CityImageProvider
 import com.nanoweather.data.local.ResourceCityImageProvider
 import com.nanoweather.ui.MainViewModel
+import com.nanoweather.ui.TemperatureUnit
 
 @Composable
 fun WeatherScreen(viewModel: MainViewModel) {
@@ -67,6 +68,20 @@ fun WeatherScreen(viewModel: MainViewModel) {
             }
 
             item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = viewModel::onToggleTemperatureUnit) {
+                        Text(
+                            text = if (uiState.temperatureUnit == TemperatureUnit.CELSIUS) "°C" else "°F",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                }
+            }
+
+            item {
                 CitySearchBar(
                     query = uiState.searchQuery,
                     searchResults = uiState.searchResults,
@@ -101,6 +116,7 @@ fun WeatherScreen(viewModel: MainViewModel) {
                 CityRow(
                     state = cityWeatherState,
                     isSelectionMode = uiState.isSelectionMode,
+                    temperatureUnit = uiState.temperatureUnit,
                     backgroundImageResId = imageProvider.getImageResId(cityWeatherState.city.id),
                     onToggle = { viewModel.onCityToggled(cityWeatherState.city.id) },
                     onLongPress = {

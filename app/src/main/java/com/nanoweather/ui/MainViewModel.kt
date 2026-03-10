@@ -84,6 +84,17 @@ class MainViewModel(
         }
     }
 
+    fun onToggleTemperatureUnit() {
+        _uiState.update { state ->
+            state.copy(
+                temperatureUnit = when (state.temperatureUnit) {
+                    TemperatureUnit.CELSIUS -> TemperatureUnit.FAHRENHEIT
+                    TemperatureUnit.FAHRENHEIT -> TemperatureUnit.CELSIUS
+                }
+            )
+        }
+    }
+
     fun onEnterSelectionMode() {
         _uiState.update { it.copy(isSelectionMode = true) }
     }

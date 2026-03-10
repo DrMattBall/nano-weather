@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.nanoweather.domain.model.HourlyForecast
+import com.nanoweather.ui.TemperatureUnit
 import kotlin.math.roundToInt
 
 private val ITEM_WIDTH = 56.dp
@@ -29,6 +30,7 @@ private val GRAPH_HEIGHT = 40.dp
 @Composable
 fun HourlyTimeline(
     forecasts: List<HourlyForecast>,
+    temperatureUnit: TemperatureUnit,
     modifier: Modifier = Modifier
 ) {
     if (forecasts.isEmpty()) return
@@ -73,7 +75,7 @@ fun HourlyTimeline(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "${forecast.temperature.roundToInt()}°",
+                            text = "${convertTemp(forecast.temperature, temperatureUnit)}°",
                             style = textStyleBody
                         )
                     }
@@ -149,6 +151,13 @@ fun HourlyTimeline(
                 }
             }
         }
+    }
+}
+
+private fun convertTemp(celsius: Double, unit: TemperatureUnit): Int {
+    return when (unit) {
+        TemperatureUnit.CELSIUS -> celsius.roundToInt()
+        TemperatureUnit.FAHRENHEIT -> (celsius * 9.0 / 5.0 + 32.0).roundToInt()
     }
 }
 
