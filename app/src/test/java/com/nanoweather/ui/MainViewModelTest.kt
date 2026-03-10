@@ -63,8 +63,11 @@ class MainViewModelTest {
 
     private val fakeSettingsRepo = object : SettingsRepository {
         private var contrastBubbles = false
+        private var useFahrenheit = false
         override fun getContrastBubbles() = contrastBubbles
         override fun setContrastBubbles(enabled: Boolean) { contrastBubbles = enabled }
+        override fun getUseFahrenheit() = useFahrenheit
+        override fun setUseFahrenheit(enabled: Boolean) { useFahrenheit = enabled }
     }
 
     private val fakeRadarRepo = object : RadarRepository {

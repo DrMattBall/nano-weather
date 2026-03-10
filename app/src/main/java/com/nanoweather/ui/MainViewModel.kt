@@ -36,7 +36,12 @@ class MainViewModel(
     private var searchJob: Job? = null
 
     init {
-        _uiState.update { it.copy(contrastBubbles = settingsRepository.getContrastBubbles()) }
+        _uiState.update {
+            it.copy(
+                contrastBubbles = settingsRepository.getContrastBubbles(),
+                temperatureUnit = if (settingsRepository.getUseFahrenheit()) TemperatureUnit.FAHRENHEIT else TemperatureUnit.CELSIUS
+            )
+        }
         loadSavedCities()
     }
 
@@ -125,14 +130,12 @@ class MainViewModel(
     }
 
     fun onToggleTemperatureUnit() {
-        _uiState.update { state ->
-            state.copy(
-                temperatureUnit = when (state.temperatureUnit) {
-                    TemperatureUnit.CELSIUS -> TemperatureUnit.FAHRENHEIT
-                    TemperatureUnit.FAHRENHEIT -> TemperatureUnit.CELSIUS
-                }
-            )
+        val newUnit = when (_uiState.value.temperatureUnit) {
+            TemperatureUnit.CELSIUS -> TemperatureUnit.FAHRENHEIT
+            TemperatureUnit.FAHRENHEIT -> TemperatureUnit.CELSIUS
         }
+        settingsRepository.setUseFahrenheit(newUnit == TemperatureUnit.FAHRENHEIT)
+        _uiState.update { it.copy(temperatureUnit = newUnit) }
     }
 
     fun onToggleContrastBubbles() {

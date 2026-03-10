@@ -13,7 +13,15 @@ class SettingsRepositoryImpl(
         prefs.edit().putBoolean(KEY_CONTRAST_BUBBLES, enabled).apply()
     }
 
+    override fun getUseFahrenheit(): Boolean =
+        prefs.getBoolean(KEY_USE_FAHRENHEIT, false)
+
+    override fun setUseFahrenheit(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_USE_FAHRENHEIT, enabled).apply()
+    }
+
     companion object {
         private const val KEY_CONTRAST_BUBBLES = "contrast_bubbles"
+        private const val KEY_USE_FAHRENHEIT = "use_fahrenheit"
     }
 }
