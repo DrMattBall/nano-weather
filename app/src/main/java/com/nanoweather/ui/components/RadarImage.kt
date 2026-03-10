@@ -13,11 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Fullscreen
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,22 +46,9 @@ fun RadarImage(
             .aspectRatio(1f)
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-            .clickable { isFullscreen = true }
+            .clickable { isFullscreen = !isFullscreen }
     ) {
         RadarTileGrid(radarMapData = radarMapData)
-
-        IconButton(
-            onClick = { isFullscreen = true },
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .size(32.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Fullscreen,
-                contentDescription = "Expand radar",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
 
         Text(
             text = "Radar",
@@ -87,6 +69,7 @@ fun RadarImage(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.surface)
+                    .clickable { isFullscreen = false }
             ) {
                 Box(
                     modifier = Modifier
@@ -95,19 +78,6 @@ fun RadarImage(
                         .align(Alignment.Center)
                 ) {
                     RadarTileGrid(radarMapData = radarMapData)
-                }
-
-                IconButton(
-                    onClick = { isFullscreen = false },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
                 }
             }
         }
