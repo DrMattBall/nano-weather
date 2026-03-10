@@ -102,6 +102,7 @@ fun WeatherScreen(viewModel: MainViewModel) {
                     CitySearchBar(
                         query = uiState.searchQuery,
                         searchResults = uiState.searchResults,
+                        nearbyCities = uiState.nearbyCities,
                         isSearching = uiState.isSearching,
                         onQueryChanged = viewModel::onSearchQueryChanged,
                         onCitySelected = viewModel::onCitySelected,

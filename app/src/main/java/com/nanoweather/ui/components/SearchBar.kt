@@ -21,6 +21,7 @@ import com.nanoweather.domain.model.City
 fun CitySearchBar(
     query: String,
     searchResults: List<City>,
+    nearbyCities: List<City>,
     isSearching: Boolean,
     onQueryChanged: (String) -> Unit,
     onCitySelected: (City) -> Unit,
@@ -36,7 +37,9 @@ fun CitySearchBar(
             singleLine = true
         )
 
-        if (searchResults.isNotEmpty()) {
+        val displayCities = if (query.isEmpty()) nearbyCities else searchResults
+
+        if (displayCities.isNotEmpty()) {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 tonalElevation = 2.dp,
@@ -44,7 +47,16 @@ fun CitySearchBar(
                 shape = MaterialTheme.shapes.small
             ) {
                 Column {
-                    searchResults.forEachIndexed { index, city ->
+                    if (query.isEmpty() && nearbyCities.isNotEmpty()) {
+                        Text(
+                            text = "Nearby",
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        HorizontalDivider()
+                    }
+                    displayCities.forEachIndexed { index, city ->
                         Text(
                             text = buildCityLabel(city),
                             modifier = Modifier
@@ -53,7 +65,7 @@ fun CitySearchBar(
                                 .padding(horizontal = 16.dp, vertical = 12.dp),
                             style = MaterialTheme.typography.bodyLarge
                         )
-                        if (index < searchResults.lastIndex) {
+                        if (index < displayCities.lastIndex) {
                             HorizontalDivider()
                         }
                     }

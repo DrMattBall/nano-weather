@@ -2,6 +2,7 @@ package com.nanoweather.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nanoweather.data.location.LocationProvider
 import com.nanoweather.data.repository.CityRepository
 import com.nanoweather.data.repository.GeocodingRepository
 import com.nanoweather.data.repository.WeatherRepository
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val geocodingRepository: GeocodingRepository,
     private val weatherRepository: WeatherRepository,
-    private val cityRepository: CityRepository
+    private val cityRepository: CityRepository,
+    private var locationProvider: LocationProvider? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainUiState())
@@ -65,14 +67,30 @@ class MainViewModel(
         }
     }
 
+    fun onLocationPermissionGranted(provider: LocationProvider) {
+        locationProvider = provider
+    }
+
     fun onShowSearch() {
         _uiState.update { it.copy(isSearchVisible = true) }
+        fetchNearbyCities()
+    }
+
+    private fun fetchNearbyCities() {
+        val provider = locationProvider ?: return
+        viewModelScope.launch {
+            val location = provider.getLastLocation() ?: return@launch
+            geocodingRepository.nearbyCities(location.latitude, location.longitude)
+                .onSuccess { cities ->
+                    _uiState.update { it.copy(nearbyCities = cities) }
+                }
+        }
     }
 
     fun onDismissSearch() {
         searchJob?.cancel()
         _uiState.update {
-            it.copy(isSearchVisible = false, searchQuery = "", searchResults = emptyList())
+            it.copy(isSearchVisible = false, searchQuery = "", searchResults = emptyList(), nearbyCities = emptyList())
         }
     }
 

@@ -25,6 +25,7 @@ enum class TemperatureUnit { CELSIUS, FAHRENHEIT }
 data class MainUiState(
     val searchQuery: String = "",
     val searchResults: List<City> = emptyList(),
+    val nearbyCities: List<City> = emptyList(),
     val isSearching: Boolean = false,
     val cities: List<CityWeatherState> = emptyList(),
     val isSelectionMode: Boolean = false,

@@ -41,6 +41,7 @@ class MainViewModelTest {
     private val fakeGeocodingRepo = object : GeocodingRepository {
         var result: Result<List<City>> = Result.success(listOf(london))
         override suspend fun searchCities(query: String) = result
+        override suspend fun nearbyCities(latitude: Double, longitude: Double) = result
     }
 
     private val fakeWeatherRepo = object : WeatherRepository {
