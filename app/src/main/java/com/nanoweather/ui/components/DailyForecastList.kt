@@ -1,5 +1,6 @@
 package com.nanoweather.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.Icon
@@ -15,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.nanoweather.domain.model.DailyForecast
 import com.nanoweather.ui.TemperatureUnit
@@ -29,7 +32,10 @@ fun DailyForecastList(
     temperatureUnit: TemperatureUnit,
     modifier: Modifier = Modifier
 ) {
-    androidx.compose.foundation.layout.Column(modifier = modifier) {
+    androidx.compose.foundation.layout.Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
         forecasts.forEach { forecast ->
             DailyForecastRow(forecast = forecast, temperatureUnit = temperatureUnit)
         }
@@ -44,7 +50,11 @@ private fun DailyForecastRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .background(
+                color = Color.White.copy(alpha = 0.75f),
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(horizontal = 10.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

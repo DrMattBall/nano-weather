@@ -3,13 +3,16 @@ package com.nanoweather.ui.components
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -84,7 +88,12 @@ fun CityRow(
                     }
 
                     Row(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .background(
+                                color = Color.White.copy(alpha = 0.75f),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .padding(horizontal = 10.dp, vertical = 6.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -118,6 +127,8 @@ fun CityRow(
                         }
                     }
 
+                    Spacer(modifier = Modifier.weight(1f))
+
                     if (state.isLoading) {
                         Text(
                             text = "...",
@@ -131,7 +142,15 @@ fun CityRow(
                             color = MaterialTheme.colorScheme.error
                         )
                     } else {
-                        Column(horizontalAlignment = Alignment.End) {
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .background(
+                                    color = Color.White.copy(alpha = 0.75f),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .padding(horizontal = 10.dp, vertical = 6.dp)
+                        ) {
                             Text(
                                 text = "UV: ${formatUv(state.currentUvIndex)}",
                                 style = MaterialTheme.typography.labelMedium,
