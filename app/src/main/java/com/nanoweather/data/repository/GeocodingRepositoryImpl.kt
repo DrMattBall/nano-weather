@@ -17,11 +17,25 @@ class GeocodingRepositoryImpl(
     }
 
     override suspend fun nearbyCities(latitude: Double, longitude: Double): Result<List<City>> = runCatching {
-        val locality = reverseGeocoder?.getLocalityName(latitude, longitude)
+        val geocoder = reverseGeocoder
             ?: throw IllegalStateException("Reverse geocoder unavailable")
-        val response = api.searchCities(name = locality, count = 10)
-        val cities = response.results?.map { it.toCity() } ?: emptyList()
-        cities.sortedBy { approxDistance(latitude, longitude, it.latitude, it.longitude) }
+        val localityNames = geocoder.getNearbyLocalityNames(latitude, longitude)
+        if (localityNames.isEmpty()) throw IllegalStateException("No nearby localities found")
+
+        val seenIds = mutableSetOf<Int>()
+        val allCities = mutableListOf<City>()
+        for (name in localityNames) {
+            val response = api.searchCities(name = name, count = 3)
+            val cities = response.results?.map { it.toCity() } ?: emptyList()
+            for (city in cities) {
+                if (seenIds.add(city.id)) {
+                    allCities.add(city)
+                }
+            }
+        }
+        allCities
+            .sortedBy { approxDistance(latitude, longitude, it.latitude, it.longitude) }
+            .take(10)
     }
 
     private fun approxDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
