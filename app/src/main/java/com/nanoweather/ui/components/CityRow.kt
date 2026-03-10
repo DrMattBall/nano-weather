@@ -174,15 +174,25 @@ fun CityRow(
                 }
             }
 
-            if (state.isExpanded && !state.isLoading && state.error == null && state.dailyForecasts.isNotEmpty()) {
-                DailyForecastList(
-                    forecasts = state.dailyForecasts,
-                    temperatureUnit = temperatureUnit,
-                    contrastBubbles = contrastBubbles,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 12.dp)
-                )
+            if (state.isExpanded && !state.isLoading && state.error == null) {
+                if (state.dailyForecasts.isNotEmpty()) {
+                    DailyForecastList(
+                        forecasts = state.dailyForecasts,
+                        temperatureUnit = temperatureUnit,
+                        contrastBubbles = contrastBubbles,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, top = 12.dp)
+                    )
+                }
+
+                if (state.radarMapData != null) {
+                    RadarImage(
+                        radarMapData = state.radarMapData,
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 16.dp)
+                    )
+                }
             }
         }
     }

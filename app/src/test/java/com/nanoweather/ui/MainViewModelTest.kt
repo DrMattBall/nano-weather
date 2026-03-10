@@ -2,6 +2,7 @@ package com.nanoweather.ui
 
 import com.nanoweather.data.repository.CityRepository
 import com.nanoweather.data.repository.GeocodingRepository
+import com.nanoweather.data.repository.RadarRepository
 import com.nanoweather.data.repository.SettingsRepository
 import com.nanoweather.data.repository.WeatherRepository
 import com.nanoweather.domain.model.City
@@ -9,6 +10,7 @@ import com.nanoweather.domain.model.CityWeather
 import com.nanoweather.domain.model.CurrentWeather
 import com.nanoweather.domain.model.DailyForecast
 import com.nanoweather.domain.model.HourlyForecast
+import com.nanoweather.domain.model.RadarMapData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -63,6 +65,11 @@ class MainViewModelTest {
         override fun setContrastBubbles(enabled: Boolean) { contrastBubbles = enabled }
     }
 
+    private val fakeRadarRepo = object : RadarRepository {
+        override suspend fun getRadarMapData(latitude: Double, longitude: Double) =
+            Result.success(RadarMapData(7, 64, 42, 0.5f, 0.5f, "https://example.com/{x}/{y}.png", "https://example.com/radar/{x}/{y}.png"))
+    }
+
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
@@ -73,7 +80,7 @@ class MainViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun createViewModel() = MainViewModel(fakeGeocodingRepo, fakeWeatherRepo, fakeCityRepo, fakeSettingsRepo)
+    private fun createViewModel() = MainViewModel(fakeGeocodingRepo, fakeWeatherRepo, fakeCityRepo, fakeSettingsRepo, fakeRadarRepo)
 
     @Test
     fun `init loads saved cities and fetches weather`() = runTest {

@@ -11,6 +11,8 @@ import com.nanoweather.data.repository.CityRepository
 import com.nanoweather.data.repository.CityRepositoryImpl
 import com.nanoweather.data.repository.GeocodingRepository
 import com.nanoweather.data.repository.GeocodingRepositoryImpl
+import com.nanoweather.data.repository.RadarRepository
+import com.nanoweather.data.repository.RadarRepositoryImpl
 import com.nanoweather.data.repository.SettingsRepository
 import com.nanoweather.data.repository.SettingsRepositoryImpl
 import com.nanoweather.data.repository.WeatherRepository
@@ -26,6 +28,8 @@ class NanoWeatherApp : Application() {
         private set
     lateinit var settingsRepository: SettingsRepository
         private set
+    lateinit var radarRepository: RadarRepository
+        private set
     lateinit var locationProvider: LocationProvider
         private set
 
@@ -40,6 +44,7 @@ class NanoWeatherApp : Application() {
         weatherRepository = WeatherRepositoryImpl(retrofitProvider.weatherApi())
         cityRepository = CityRepositoryImpl(SharedPrefsCityStorage(prefs))
         settingsRepository = SettingsRepositoryImpl(prefs)
+        radarRepository = RadarRepositoryImpl(retrofitProvider.rainViewerApi())
         locationProvider = FusedLocationProvider(this)
     }
 }

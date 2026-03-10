@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nanoweather.data.location.LocationProvider
 import com.nanoweather.data.repository.CityRepository
 import com.nanoweather.data.repository.GeocodingRepository
+import com.nanoweather.data.repository.RadarRepository
 import com.nanoweather.data.repository.SettingsRepository
 import com.nanoweather.data.repository.WeatherRepository
 import com.nanoweather.domain.model.City
@@ -23,6 +24,7 @@ class MainViewModel(
     private val weatherRepository: WeatherRepository,
     private val cityRepository: CityRepository,
     private val settingsRepository: SettingsRepository,
+    private val radarRepository: RadarRepository,
     private var locationProvider: LocationProvider? = null
 ) : ViewModel() {
 
@@ -190,6 +192,29 @@ class MainViewModel(
                     }
                 }
             )
+        }
+        val cityState = _uiState.value.cities.find { it.city.id == cityId }
+        if (cityState?.isExpanded == true && cityState.radarMapData == null) {
+            fetchRadarForCity(cityState.city)
+        }
+    }
+
+    private fun fetchRadarForCity(city: com.nanoweather.domain.model.City) {
+        viewModelScope.launch {
+            radarRepository.getRadarMapData(city.latitude, city.longitude)
+                .onSuccess { data ->
+                    _uiState.update { state ->
+                        state.copy(
+                            cities = state.cities.map { cityState ->
+                                if (cityState.city.id == city.id) {
+                                    cityState.copy(radarMapData = data)
+                                } else {
+                                    cityState
+                                }
+                            }
+                        )
+                    }
+                }
         }
     }
 

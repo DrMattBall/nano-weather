@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
                 app.weatherRepository,
                 app.cityRepository,
                 app.settingsRepository,
+                app.radarRepository,
                 if (hasLocationPermission) app.locationProvider else null
             )
         )[MainViewModel::class.java]

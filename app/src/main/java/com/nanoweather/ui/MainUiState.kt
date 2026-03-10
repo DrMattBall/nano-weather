@@ -3,6 +3,7 @@ package com.nanoweather.ui
 import com.nanoweather.domain.model.City
 import com.nanoweather.domain.model.DailyForecast
 import com.nanoweather.domain.model.HourlyForecast
+import com.nanoweather.domain.model.RadarMapData
 
 data class CityWeatherState(
     val city: City,
@@ -15,6 +16,7 @@ data class CityWeatherState(
     val currentUvIndex: Double? = null,
     val maxUvIndex: Double? = null,
     val isExpanded: Boolean = false,
+    val radarMapData: RadarMapData? = null,
     val isLoading: Boolean = true,
     val error: String? = null,
     val isSelected: Boolean = false
