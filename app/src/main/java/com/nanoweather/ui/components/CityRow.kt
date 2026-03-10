@@ -65,62 +65,96 @@ fun CityRow(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         )
     ) {
-        Box {
-            if (backgroundImageResId != null) {
-                Image(
-                    painter = painterResource(id = backgroundImageResId),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .matchParentSize()
-                        .alpha(0.2f),
-                    contentScale = ContentScale.Crop
-                )
-            }
-
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (isSelectionMode) {
-                        Checkbox(
-                            checked = state.isSelected,
-                            onCheckedChange = { onSelectionToggle() }
-                        )
-                    }
-
-                    Row(
+        Column {
+            Box {
+                if (backgroundImageResId != null) {
+                    Image(
+                        painter = painterResource(id = backgroundImageResId),
+                        contentDescription = null,
                         modifier = Modifier
-                            .bubbleBackground(contrastBubbles),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            .matchParentSize()
+                            .alpha(0.2f),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = state.city.name,
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        if (!state.isLoading && state.error == null && state.currentWeatherCode != null) {
-                            val weather = weatherIcon(state.currentWeatherCode)
-                            Icon(
-                                imageVector = weather.icon,
-                                contentDescription = weather.description,
-                                modifier = Modifier.size(20.dp)
+                        if (isSelectionMode) {
+                            Checkbox(
+                                checked = state.isSelected,
+                                onCheckedChange = { onSelectionToggle() }
                             )
                         }
-                        if (!state.isLoading && state.error == null) {
+
+                        Row(
+                            modifier = Modifier
+                                .bubbleBackground(contrastBubbles),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Text(
-                                text = "${formatTemp(state.currentTemp, temperatureUnit)}°",
-                                style = MaterialTheme.typography.headlineSmall
+                                text = state.city.name,
+                                style = MaterialTheme.typography.titleMedium
                             )
-                            Column {
+                            if (!state.isLoading && state.error == null && state.currentWeatherCode != null) {
+                                val weather = weatherIcon(state.currentWeatherCode)
+                                Icon(
+                                    imageVector = weather.icon,
+                                    contentDescription = weather.description,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                            if (!state.isLoading && state.error == null) {
                                 Text(
-                                    text = "H: ${formatTemp(state.highTemp, temperatureUnit)}°",
+                                    text = "${formatTemp(state.currentTemp, temperatureUnit)}°",
+                                    style = MaterialTheme.typography.headlineSmall
+                                )
+                                Column {
+                                    Text(
+                                        text = "H: ${formatTemp(state.highTemp, temperatureUnit)}°",
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    Text(
+                                        text = "L: ${formatTemp(state.lowTemp, temperatureUnit)}°",
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        if (state.isLoading) {
+                            Text(
+                                text = "...",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        } else if (state.error != null) {
+                            Text(
+                                text = "Error",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        } else {
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                                modifier = Modifier.bubbleBackground(contrastBubbles)
+                            ) {
+                                Text(
+                                    text = "UV: ${formatUv(state.currentUvIndex)}",
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
-                                    text = "L: ${formatTemp(state.lowTemp, temperatureUnit)}°",
+                                    text = "Max: ${formatUv(state.maxUvIndex)}",
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -128,59 +162,27 @@ fun CityRow(
                         }
                     }
 
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    if (state.isLoading) {
-                        Text(
-                            text = "...",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    } else if (state.error != null) {
-                        Text(
-                            text = "Error",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    } else {
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier.bubbleBackground(contrastBubbles)
-                        ) {
-                            Text(
-                                text = "UV: ${formatUv(state.currentUvIndex)}",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Text(
-                                text = "Max: ${formatUv(state.maxUvIndex)}",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-
-                if (state.isExpanded && !state.isLoading && state.error == null) {
-                    HourlyTimeline(
-                        forecasts = state.hourlyForecasts,
-                        temperatureUnit = temperatureUnit,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 12.dp)
-                    )
-
-                    if (state.dailyForecasts.isNotEmpty()) {
-                        DailyForecastList(
-                            forecasts = state.dailyForecasts,
+                    if (state.isExpanded && !state.isLoading && state.error == null) {
+                        HourlyTimeline(
+                            forecasts = state.hourlyForecasts,
                             temperatureUnit = temperatureUnit,
-                            contrastBubbles = contrastBubbles,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 12.dp)
                         )
                     }
                 }
+            }
+
+            if (state.isExpanded && !state.isLoading && state.error == null && state.dailyForecasts.isNotEmpty()) {
+                DailyForecastList(
+                    forecasts = state.dailyForecasts,
+                    temperatureUnit = temperatureUnit,
+                    contrastBubbles = contrastBubbles,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 12.dp)
+                )
             }
         }
     }
