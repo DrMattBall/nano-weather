@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nanoweather.data.location.LocationProvider
 import com.nanoweather.data.repository.CityRepository
 import com.nanoweather.data.repository.GeocodingRepository
+import com.nanoweather.data.repository.SettingsRepository
 import com.nanoweather.data.repository.WeatherRepository
 import com.nanoweather.domain.model.City
 import kotlinx.coroutines.Job
@@ -21,6 +22,7 @@ class MainViewModel(
     private val geocodingRepository: GeocodingRepository,
     private val weatherRepository: WeatherRepository,
     private val cityRepository: CityRepository,
+    private val settingsRepository: SettingsRepository,
     private var locationProvider: LocationProvider? = null
 ) : ViewModel() {
 
@@ -30,6 +32,7 @@ class MainViewModel(
     private var searchJob: Job? = null
 
     init {
+        _uiState.update { it.copy(contrastBubbles = settingsRepository.getContrastBubbles()) }
         loadSavedCities()
     }
 
@@ -126,6 +129,12 @@ class MainViewModel(
                 }
             )
         }
+    }
+
+    fun onToggleContrastBubbles() {
+        val newValue = !_uiState.value.contrastBubbles
+        settingsRepository.setContrastBubbles(newValue)
+        _uiState.update { it.copy(contrastBubbles = newValue) }
     }
 
     fun onEnterSelectionMode() {

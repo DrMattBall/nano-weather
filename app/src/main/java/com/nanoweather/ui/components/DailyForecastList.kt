@@ -30,6 +30,7 @@ import kotlin.math.roundToInt
 fun DailyForecastList(
     forecasts: List<DailyForecast>,
     temperatureUnit: TemperatureUnit,
+    contrastBubbles: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     androidx.compose.foundation.layout.Column(
@@ -37,7 +38,7 @@ fun DailyForecastList(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         forecasts.forEach { forecast ->
-            DailyForecastRow(forecast = forecast, temperatureUnit = temperatureUnit)
+            DailyForecastRow(forecast = forecast, temperatureUnit = temperatureUnit, contrastBubbles = contrastBubbles)
         }
     }
 }
@@ -45,16 +46,24 @@ fun DailyForecastList(
 @Composable
 private fun DailyForecastRow(
     forecast: DailyForecast,
-    temperatureUnit: TemperatureUnit
+    temperatureUnit: TemperatureUnit,
+    contrastBubbles: Boolean
 ) {
-    Row(
-        modifier = Modifier
+    val rowModifier = if (contrastBubbles) {
+        Modifier
             .fillMaxWidth()
             .background(
                 color = Color.White.copy(alpha = 0.75f),
                 shape = RoundedCornerShape(12.dp)
             )
-            .padding(horizontal = 10.dp, vertical = 8.dp),
+            .padding(horizontal = 10.dp, vertical = 8.dp)
+    } else {
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    }
+    Row(
+        modifier = rowModifier,
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

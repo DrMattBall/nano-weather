@@ -30,5 +30,6 @@ data class MainUiState(
     val cities: List<CityWeatherState> = emptyList(),
     val isSelectionMode: Boolean = false,
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
-    val isSearchVisible: Boolean = false
+    val isSearchVisible: Boolean = false,
+    val contrastBubbles: Boolean = false
 )

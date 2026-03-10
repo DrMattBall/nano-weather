@@ -136,6 +136,7 @@ fun WeatherScreen(viewModel: MainViewModel) {
                     state = cityWeatherState,
                     isSelectionMode = uiState.isSelectionMode,
                     temperatureUnit = uiState.temperatureUnit,
+                    contrastBubbles = uiState.contrastBubbles,
                     backgroundImageResId = imageProvider.getImageResId(cityWeatherState.city.id),
                     onToggle = { viewModel.onCityToggled(cityWeatherState.city.id) },
                     onLongPress = {

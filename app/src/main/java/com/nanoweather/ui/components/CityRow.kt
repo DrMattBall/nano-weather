@@ -42,6 +42,7 @@ fun CityRow(
     state: CityWeatherState,
     isSelectionMode: Boolean,
     temperatureUnit: TemperatureUnit,
+    contrastBubbles: Boolean,
     backgroundImageResId: Int?,
     onToggle: () -> Unit,
     onLongPress: () -> Unit,
@@ -91,11 +92,7 @@ fun CityRow(
 
                     Row(
                         modifier = Modifier
-                            .background(
-                                color = Color.White.copy(alpha = 0.75f),
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .padding(horizontal = 10.dp, vertical = 6.dp),
+                            .bubbleBackground(contrastBubbles),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -148,12 +145,7 @@ fun CityRow(
                     } else {
                         Column(
                             horizontalAlignment = Alignment.End,
-                            modifier = Modifier
-                                .background(
-                                    color = Color.White.copy(alpha = 0.75f),
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                .padding(horizontal = 10.dp, vertical = 6.dp)
+                            modifier = Modifier.bubbleBackground(contrastBubbles)
                         ) {
                             Text(
                                 text = "UV: ${formatUv(state.currentUvIndex)}",
@@ -182,6 +174,7 @@ fun CityRow(
                         DailyForecastList(
                             forecasts = state.dailyForecasts,
                             temperatureUnit = temperatureUnit,
+                            contrastBubbles = contrastBubbles,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 12.dp)
@@ -192,6 +185,18 @@ fun CityRow(
         }
     }
 }
+
+private fun Modifier.bubbleBackground(enabled: Boolean): Modifier =
+    if (enabled) {
+        this
+            .background(
+                color = Color.White.copy(alpha = 0.75f),
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(horizontal = 10.dp, vertical = 6.dp)
+    } else {
+        this
+    }
 
 private fun formatTemp(celsius: Double?, unit: TemperatureUnit): String {
     if (celsius == null) return "--"

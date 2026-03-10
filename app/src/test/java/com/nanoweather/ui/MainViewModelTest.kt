@@ -2,6 +2,7 @@ package com.nanoweather.ui
 
 import com.nanoweather.data.repository.CityRepository
 import com.nanoweather.data.repository.GeocodingRepository
+import com.nanoweather.data.repository.SettingsRepository
 import com.nanoweather.data.repository.WeatherRepository
 import com.nanoweather.domain.model.City
 import com.nanoweather.domain.model.CityWeather
@@ -56,6 +57,12 @@ class MainViewModelTest {
         override suspend fun removeCity(cityId: Int) { cities.removeAll { it.id == cityId } }
     }
 
+    private val fakeSettingsRepo = object : SettingsRepository {
+        private var contrastBubbles = false
+        override fun getContrastBubbles() = contrastBubbles
+        override fun setContrastBubbles(enabled: Boolean) { contrastBubbles = enabled }
+    }
+
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
@@ -66,7 +73,7 @@ class MainViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun createViewModel() = MainViewModel(fakeGeocodingRepo, fakeWeatherRepo, fakeCityRepo)
+    private fun createViewModel() = MainViewModel(fakeGeocodingRepo, fakeWeatherRepo, fakeCityRepo, fakeSettingsRepo)
 
     @Test
     fun `init loads saved cities and fetches weather`() = runTest {
