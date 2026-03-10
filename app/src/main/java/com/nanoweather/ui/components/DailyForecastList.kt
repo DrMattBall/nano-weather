@@ -68,9 +68,12 @@ private fun DailyForecastRow(
             modifier = Modifier.width(28.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = weatherEmoji(forecast.weatherCode),
-                style = MaterialTheme.typography.bodyMedium
+            val weather = weatherIcon(forecast.weatherCode)
+            Icon(
+                imageVector = weather.icon,
+                contentDescription = weather.description,
+                modifier = Modifier.size(18.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 

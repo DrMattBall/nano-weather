@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
@@ -102,9 +104,11 @@ fun CityRow(
                             style = MaterialTheme.typography.titleMedium
                         )
                         if (!state.isLoading && state.error == null && state.currentWeatherCode != null) {
-                            Text(
-                                text = weatherEmoji(state.currentWeatherCode),
-                                style = MaterialTheme.typography.titleMedium
+                            val weather = weatherIcon(state.currentWeatherCode)
+                            Icon(
+                                imageVector = weather.icon,
+                                contentDescription = weather.description,
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                         if (!state.isLoading && state.error == null) {
