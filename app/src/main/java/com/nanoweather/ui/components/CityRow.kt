@@ -186,12 +186,26 @@ fun CityRow(
                     )
                 }
 
-                if (state.radarMapData != null) {
-                    RadarImage(
-                        radarMapData = state.radarMapData,
+                if (state.radarMapData != null || state.airQuality != null) {
+                    Row(
                         modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 16.dp)
-                    )
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 16.dp),
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        if (state.radarMapData != null) {
+                            RadarImage(
+                                radarMapData = state.radarMapData,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                        if (state.airQuality != null) {
+                            AirQualitySummary(
+                                airQuality = state.airQuality,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
                 }
             }
         }

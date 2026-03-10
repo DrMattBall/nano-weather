@@ -47,7 +47,7 @@ fun RadarImage(
 
     Box(
         modifier = modifier
-            .fillMaxWidth(0.5f)
+            .fillMaxWidth()
             .aspectRatio(1f)
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceContainerHighest)

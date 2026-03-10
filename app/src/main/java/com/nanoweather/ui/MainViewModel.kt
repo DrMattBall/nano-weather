@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nanoweather.data.location.LocationProvider
 import com.nanoweather.data.repository.CityRepository
 import com.nanoweather.data.repository.GeocodingRepository
+import com.nanoweather.data.repository.AirQualityRepository
 import com.nanoweather.data.repository.RadarRepository
 import com.nanoweather.data.repository.SettingsRepository
 import com.nanoweather.data.repository.WeatherRepository
@@ -25,6 +26,7 @@ class MainViewModel(
     private val cityRepository: CityRepository,
     private val settingsRepository: SettingsRepository,
     private val radarRepository: RadarRepository,
+    private val airQualityRepository: AirQualityRepository,
     private var locationProvider: LocationProvider? = null
 ) : ViewModel() {
 
@@ -194,8 +196,9 @@ class MainViewModel(
             )
         }
         val cityState = _uiState.value.cities.find { it.city.id == cityId }
-        if (cityState?.isExpanded == true && cityState.radarMapData == null) {
-            fetchRadarForCity(cityState.city)
+        if (cityState?.isExpanded == true) {
+            if (cityState.radarMapData == null) fetchRadarForCity(cityState.city)
+            if (cityState.airQuality == null) fetchAirQualityForCity(cityState.city)
         }
     }
 
@@ -208,6 +211,25 @@ class MainViewModel(
                             cities = state.cities.map { cityState ->
                                 if (cityState.city.id == city.id) {
                                     cityState.copy(radarMapData = data)
+                                } else {
+                                    cityState
+                                }
+                            }
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun fetchAirQualityForCity(city: City) {
+        viewModelScope.launch {
+            airQualityRepository.getAirQuality(city.latitude, city.longitude)
+                .onSuccess { aq ->
+                    _uiState.update { state ->
+                        state.copy(
+                            cities = state.cities.map { cityState ->
+                                if (cityState.city.id == city.id) {
+                                    cityState.copy(airQuality = aq)
                                 } else {
                                     cityState
                                 }

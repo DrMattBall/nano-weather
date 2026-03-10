@@ -3,6 +3,7 @@ package com.nanoweather
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nanoweather.data.location.LocationProvider
+import com.nanoweather.data.repository.AirQualityRepository
 import com.nanoweather.data.repository.CityRepository
 import com.nanoweather.data.repository.GeocodingRepository
 import com.nanoweather.data.repository.RadarRepository
@@ -16,11 +17,12 @@ class MainViewModelFactory(
     private val cityRepository: CityRepository,
     private val settingsRepository: SettingsRepository,
     private val radarRepository: RadarRepository,
+    private val airQualityRepository: AirQualityRepository,
     private val locationProvider: LocationProvider?
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return MainViewModel(geocodingRepository, weatherRepository, cityRepository, settingsRepository, radarRepository, locationProvider) as T
+        return MainViewModel(geocodingRepository, weatherRepository, cityRepository, settingsRepository, radarRepository, airQualityRepository, locationProvider) as T
     }
 }

@@ -2,6 +2,7 @@ package com.nanoweather.ui
 
 import com.nanoweather.data.repository.CityRepository
 import com.nanoweather.data.repository.GeocodingRepository
+import com.nanoweather.data.repository.AirQualityRepository
 import com.nanoweather.data.repository.RadarRepository
 import com.nanoweather.data.repository.SettingsRepository
 import com.nanoweather.data.repository.WeatherRepository
@@ -9,6 +10,7 @@ import com.nanoweather.domain.model.City
 import com.nanoweather.domain.model.CityWeather
 import com.nanoweather.domain.model.CurrentWeather
 import com.nanoweather.domain.model.DailyForecast
+import com.nanoweather.domain.model.AirQuality
 import com.nanoweather.domain.model.HourlyForecast
 import com.nanoweather.domain.model.RadarMapData
 import kotlinx.coroutines.Dispatchers
@@ -70,6 +72,11 @@ class MainViewModelTest {
             Result.success(RadarMapData(7, 64, 42, 0.5f, 0.5f, "https://example.com/{x}/{y}.png", "https://example.com/radar/{x}/{y}.png"))
     }
 
+    private val fakeAirQualityRepo = object : AirQualityRepository {
+        override suspend fun getAirQuality(latitude: Double, longitude: Double) =
+            Result.success(AirQuality(42, 10.0, 15.0, 5.0, 3.0, 1.0))
+    }
+
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
@@ -80,7 +87,7 @@ class MainViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun createViewModel() = MainViewModel(fakeGeocodingRepo, fakeWeatherRepo, fakeCityRepo, fakeSettingsRepo, fakeRadarRepo)
+    private fun createViewModel() = MainViewModel(fakeGeocodingRepo, fakeWeatherRepo, fakeCityRepo, fakeSettingsRepo, fakeRadarRepo, fakeAirQualityRepo)
 
     @Test
     fun `init loads saved cities and fetches weather`() = runTest {

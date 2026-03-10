@@ -1,5 +1,6 @@
 package com.nanoweather.data.remote
 
+import com.nanoweather.data.remote.api.AirQualityApiService
 import com.nanoweather.data.remote.api.GeocodingApiService
 import com.nanoweather.data.remote.api.RainViewerApiService
 import com.nanoweather.data.remote.api.WeatherApiService
@@ -41,4 +42,13 @@ class RetrofitProvider {
 
     fun rainViewerApi(): RainViewerApiService =
         rainViewerRetrofit.create(RainViewerApiService::class.java)
+
+    private val airQualityRetrofit = Retrofit.Builder()
+        .baseUrl("https://air-quality-api.open-meteo.com/")
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    fun airQualityApi(): AirQualityApiService =
+        airQualityRetrofit.create(AirQualityApiService::class.java)
 }

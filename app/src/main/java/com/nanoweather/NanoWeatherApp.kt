@@ -7,6 +7,8 @@ import com.nanoweather.data.location.AndroidReverseGeocoder
 import com.nanoweather.data.location.FusedLocationProvider
 import com.nanoweather.data.location.LocationProvider
 import com.nanoweather.data.remote.RetrofitProvider
+import com.nanoweather.data.repository.AirQualityRepository
+import com.nanoweather.data.repository.AirQualityRepositoryImpl
 import com.nanoweather.data.repository.CityRepository
 import com.nanoweather.data.repository.CityRepositoryImpl
 import com.nanoweather.data.repository.GeocodingRepository
@@ -30,6 +32,8 @@ class NanoWeatherApp : Application() {
         private set
     lateinit var radarRepository: RadarRepository
         private set
+    lateinit var airQualityRepository: AirQualityRepository
+        private set
     lateinit var locationProvider: LocationProvider
         private set
 
@@ -45,6 +49,7 @@ class NanoWeatherApp : Application() {
         cityRepository = CityRepositoryImpl(SharedPrefsCityStorage(prefs))
         settingsRepository = SettingsRepositoryImpl(prefs)
         radarRepository = RadarRepositoryImpl(retrofitProvider.rainViewerApi())
+        airQualityRepository = AirQualityRepositoryImpl(retrofitProvider.airQualityApi())
         locationProvider = FusedLocationProvider(this)
     }
 }
