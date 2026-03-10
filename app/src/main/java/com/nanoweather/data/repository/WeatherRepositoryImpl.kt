@@ -22,11 +22,16 @@ class WeatherRepositoryImpl(
                 weatherCode = response.currentWeather.weatherCode
             )
 
-            val daily = DailyForecast(
-                highTemp = response.daily.temperatureMax.first(),
-                lowTemp = response.daily.temperatureMin.first(),
-                uvIndexMax = response.daily.uvIndexMax.first()
-            )
+            val dailyForecasts = response.daily.time.mapIndexed { index, date ->
+                DailyForecast(
+                    date = date,
+                    highTemp = response.daily.temperatureMax[index],
+                    lowTemp = response.daily.temperatureMin[index],
+                    uvIndexMax = response.daily.uvIndexMax[index],
+                    precipitationProbability = response.daily.precipitationProbabilityMax[index],
+                    weatherCode = response.daily.weatherCode[index]
+                )
+            }
 
             val allHourly = response.hourly.time.mapIndexed { index, time ->
                 HourlyForecast(
@@ -54,7 +59,7 @@ class WeatherRepositoryImpl(
 
             CityWeather(
                 current = current,
-                daily = daily,
+                dailyForecasts = dailyForecasts,
                 hourly = hourly,
                 currentUvIndex = currentUvIndex
             )

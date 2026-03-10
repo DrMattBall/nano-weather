@@ -28,7 +28,10 @@ class MainViewModelTest {
     private val london = City(1, "London", 51.5, -0.1, "UK", "England")
     private val sampleWeather = CityWeather(
         current = CurrentWeather(temperature = 20.0, weatherCode = 0),
-        daily = DailyForecast(highTemp = 25.0, lowTemp = 15.0, uvIndexMax = 7.0),
+        dailyForecasts = listOf(
+            DailyForecast(date = "2024-01-15", highTemp = 25.0, lowTemp = 15.0, uvIndexMax = 7.0, precipitationProbability = 10, weatherCode = 0),
+            DailyForecast(date = "2024-01-16", highTemp = 24.0, lowTemp = 14.0, uvIndexMax = 6.0, precipitationProbability = 30, weatherCode = 61)
+        ),
         hourly = listOf(
             HourlyForecast("2024-01-15T12:00", 20.0, 0.0)
         ),

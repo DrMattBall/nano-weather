@@ -181,13 +181,16 @@ class MainViewModel(
                     state.copy(
                         cities = state.cities.map { cityState ->
                             if (cityState.city.id == city.id) {
+                                val today = weather.dailyForecasts.first()
                                 cityState.copy(
                                     currentTemp = weather.current.temperature,
-                                    highTemp = weather.daily.highTemp,
-                                    lowTemp = weather.daily.lowTemp,
+                                    currentWeatherCode = weather.current.weatherCode,
+                                    highTemp = today.highTemp,
+                                    lowTemp = today.lowTemp,
                                     hourlyForecasts = weather.hourly,
+                                    dailyForecasts = weather.dailyForecasts,
                                     currentUvIndex = weather.currentUvIndex,
-                                    maxUvIndex = weather.daily.uvIndexMax,
+                                    maxUvIndex = today.uvIndexMax,
                                     isLoading = false,
                                     error = null
                                 )

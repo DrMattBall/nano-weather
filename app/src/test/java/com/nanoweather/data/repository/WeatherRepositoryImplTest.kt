@@ -34,7 +34,9 @@ class WeatherRepositoryImplTest {
             time = listOf("2024-01-15", "2024-01-16"),
             temperatureMax = listOf(25.0, 24.0),
             temperatureMin = listOf(18.0, 17.0),
-            uvIndexMax = listOf(7.5, 6.0)
+            uvIndexMax = listOf(7.5, 6.0),
+            precipitationProbabilityMax = listOf(20, 50),
+            weatherCode = listOf(0, 61)
         ),
         hourly = HourlyDto(
             time = sampleHourlyTimes,
@@ -63,8 +65,11 @@ class WeatherRepositoryImplTest {
         val result = repo.getWeather(51.5, -0.1)
 
         val weather = result.getOrThrow()
-        assertEquals(25.0, weather.daily.highTemp, 0.001)
-        assertEquals(18.0, weather.daily.lowTemp, 0.001)
+        assertEquals(2, weather.dailyForecasts.size)
+        assertEquals(25.0, weather.dailyForecasts[0].highTemp, 0.001)
+        assertEquals(18.0, weather.dailyForecasts[0].lowTemp, 0.001)
+        assertEquals("2024-01-15", weather.dailyForecasts[0].date)
+        assertEquals(20, weather.dailyForecasts[0].precipitationProbability)
     }
 
     @Test
@@ -98,6 +103,6 @@ class WeatherRepositoryImplTest {
 
         val weather = result.getOrThrow()
         assertEquals(5.2, weather.currentUvIndex, 0.001)
-        assertEquals(7.5, weather.daily.uvIndexMax, 0.001)
+        assertEquals(7.5, weather.dailyForecasts[0].uvIndexMax, 0.001)
     }
 }

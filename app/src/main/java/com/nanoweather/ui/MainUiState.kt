@@ -1,6 +1,7 @@
 package com.nanoweather.ui
 
 import com.nanoweather.domain.model.City
+import com.nanoweather.domain.model.DailyForecast
 import com.nanoweather.domain.model.HourlyForecast
 
 data class CityWeatherState(
@@ -9,6 +10,8 @@ data class CityWeatherState(
     val highTemp: Double? = null,
     val lowTemp: Double? = null,
     val hourlyForecasts: List<HourlyForecast> = emptyList(),
+    val dailyForecasts: List<DailyForecast> = emptyList(),
+    val currentWeatherCode: Int? = null,
     val currentUvIndex: Double? = null,
     val maxUvIndex: Double? = null,
     val isExpanded: Boolean = false,

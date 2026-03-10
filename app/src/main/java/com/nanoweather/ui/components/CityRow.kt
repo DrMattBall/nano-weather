@@ -92,6 +92,12 @@ fun CityRow(
                             text = state.city.name,
                             style = MaterialTheme.typography.titleMedium
                         )
+                        if (!state.isLoading && state.error == null && state.currentWeatherCode != null) {
+                            Text(
+                                text = weatherEmoji(state.currentWeatherCode),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
                         if (!state.isLoading && state.error == null) {
                             Text(
                                 text = "${formatTemp(state.currentTemp, temperatureUnit)}°",
@@ -148,6 +154,16 @@ fun CityRow(
                             .fillMaxWidth()
                             .padding(top = 12.dp)
                     )
+
+                    if (state.dailyForecasts.isNotEmpty()) {
+                        DailyForecastList(
+                            forecasts = state.dailyForecasts,
+                            temperatureUnit = temperatureUnit,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp)
+                        )
+                    }
                 }
             }
         }
