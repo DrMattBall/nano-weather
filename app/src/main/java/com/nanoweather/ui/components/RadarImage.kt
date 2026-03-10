@@ -3,6 +3,7 @@ package com.nanoweather.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Fullscreen
@@ -45,7 +47,7 @@ fun RadarImage(
 
     Box(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth(0.5f)
             .aspectRatio(1f)
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceContainerHighest)
@@ -117,20 +119,22 @@ private fun RadarTileGrid(
     radarMapData: RadarMapData,
     modifier: Modifier = Modifier
 ) {
-    val tileSize = 256.dp
-    val tileSizePx = with(LocalDensity.current) { tileSize.toPx() }
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+        // Scale tile display size so the 3x3 grid fills the container
+        val containerPx = with(LocalDensity.current) { maxWidth.toPx() }
+        val tileDisplayPx = containerPx / 2f
+        val tileDisplayDp = with(LocalDensity.current) { (tileDisplayPx / density).dp }
 
-    val offsetX = -(radarMapData.offsetXFraction * tileSizePx).toInt()
-    val offsetY = -(radarMapData.offsetYFraction * tileSizePx).toInt()
+        val offsetX = Math.round(-(radarMapData.offsetXFraction * tileDisplayPx))
+        val offsetY = Math.round(-(radarMapData.offsetYFraction * tileDisplayPx))
 
-    Box(modifier = modifier.fillMaxSize()) {
         for (dy in -1..1) {
             for (dx in -1..1) {
                 val tileX = radarMapData.centerTileX + dx
                 val tileY = radarMapData.centerTileY + dy
 
-                val baseX = (dx + 1) * tileSizePx.toInt() + offsetX
-                val baseY = (dy + 1) * tileSizePx.toInt() + offsetY
+                val baseX = Math.round((dx + 1) * tileDisplayPx) + offsetX
+                val baseY = Math.round((dy + 1) * tileDisplayPx) + offsetY
 
                 val baseMapUrl = radarMapData.baseMapUrlTemplate
                     .replace("{x}", tileX.toString())
@@ -143,7 +147,7 @@ private fun RadarTileGrid(
                     model = baseMapUrl,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(tileSize)
+                        .size(tileDisplayDp)
                         .offset { IntOffset(baseX, baseY) },
                     contentScale = ContentScale.FillBounds
                 )
@@ -151,7 +155,7 @@ private fun RadarTileGrid(
                     model = radarUrl,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(tileSize)
+                        .size(tileDisplayDp)
                         .offset { IntOffset(baseX, baseY) }
                         .alpha(0.6f),
                     contentScale = ContentScale.FillBounds
