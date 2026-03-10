@@ -9,6 +9,8 @@ data class CityWeatherState(
     val highTemp: Double? = null,
     val lowTemp: Double? = null,
     val hourlyForecasts: List<HourlyForecast> = emptyList(),
+    val currentUvIndex: Double? = null,
+    val maxUvIndex: Double? = null,
     val isExpanded: Boolean = false,
     val isLoading: Boolean = true,
     val error: String? = null,

@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.nanoweather.ui.CityWeatherState
+import java.util.Locale
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -80,11 +81,27 @@ fun CityRow(
                         )
                     }
 
-                    Text(
-                        text = state.city.name,
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.weight(1f)
-                    )
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = state.city.name,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        if (!state.isLoading && state.error == null) {
+                            Text(
+                                text = "${state.currentTemp?.roundToInt() ?: "--"}°",
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+                            Text(
+                                text = "H:${state.highTemp?.roundToInt() ?: "--"}° L:${state.lowTemp?.roundToInt() ?: "--"}°",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
 
                     if (state.isLoading) {
                         Text(
@@ -99,26 +116,17 @@ fun CityRow(
                             color = MaterialTheme.colorScheme.error
                         )
                     } else {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                        Column(horizontalAlignment = Alignment.End) {
                             Text(
-                                text = "${state.currentTemp?.roundToInt() ?: "--"}°",
-                                style = MaterialTheme.typography.headlineSmall
+                                text = "UV: ${formatUv(state.currentUvIndex)}",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
-                            Column(horizontalAlignment = Alignment.End) {
-                                Text(
-                                    text = "H: ${state.highTemp?.roundToInt() ?: "--"}°",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    text = "L: ${state.lowTemp?.roundToInt() ?: "--"}°",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
+                            Text(
+                                text = "Max: ${formatUv(state.maxUvIndex)}",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                 }
@@ -134,4 +142,9 @@ fun CityRow(
             }
         }
     }
+}
+
+private fun formatUv(value: Double?): String {
+    if (value == null) return "--"
+    return String.format(Locale.US, "%.1f", value)
 }

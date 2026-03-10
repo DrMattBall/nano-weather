@@ -16,11 +16,13 @@ data class CurrentWeatherDto(
 data class DailyDto(
     val time: List<String>,
     @SerializedName("temperature_2m_max") val temperatureMax: List<Double>,
-    @SerializedName("temperature_2m_min") val temperatureMin: List<Double>
+    @SerializedName("temperature_2m_min") val temperatureMin: List<Double>,
+    @SerializedName("uv_index_max") val uvIndexMax: List<Double>
 )
 
 data class HourlyDto(
     val time: List<String>,
     @SerializedName("temperature_2m") val temperature: List<Double>,
-    val precipitation: List<Double>
+    val precipitation: List<Double>,
+    @SerializedName("uv_index") val uvIndex: List<Double>
 )

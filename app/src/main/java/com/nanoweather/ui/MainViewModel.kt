@@ -160,6 +160,8 @@ class MainViewModel(
                                     highTemp = weather.daily.highTemp,
                                     lowTemp = weather.daily.lowTemp,
                                     hourlyForecasts = weather.hourly,
+                                    currentUvIndex = weather.currentUvIndex,
+                                    maxUvIndex = weather.daily.uvIndexMax,
                                     isLoading = false,
                                     error = null
                                 )

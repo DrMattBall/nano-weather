@@ -28,10 +28,11 @@ class MainViewModelTest {
     private val london = City(1, "London", 51.5, -0.1, "UK", "England")
     private val sampleWeather = CityWeather(
         current = CurrentWeather(temperature = 20.0, weatherCode = 0),
-        daily = DailyForecast(highTemp = 25.0, lowTemp = 15.0),
+        daily = DailyForecast(highTemp = 25.0, lowTemp = 15.0, uvIndexMax = 7.0),
         hourly = listOf(
             HourlyForecast("2024-01-15T12:00", 20.0, 0.0)
-        )
+        ),
+        currentUvIndex = 3.5
     )
 
     private val fakeGeocodingRepo = object : GeocodingRepository {

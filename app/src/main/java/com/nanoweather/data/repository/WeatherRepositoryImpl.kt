@@ -24,7 +24,8 @@ class WeatherRepositoryImpl(
 
             val daily = DailyForecast(
                 highTemp = response.daily.temperatureMax.first(),
-                lowTemp = response.daily.temperatureMin.first()
+                lowTemp = response.daily.temperatureMin.first(),
+                uvIndexMax = response.daily.uvIndexMax.first()
             )
 
             val allHourly = response.hourly.time.mapIndexed { index, time ->
@@ -40,10 +41,22 @@ class WeatherRepositoryImpl(
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
             val cutoff = currentHour.format(formatter)
 
+            val currentHourIndex = response.hourly.time.indexOf(cutoff)
+            val currentUvIndex = if (currentHourIndex >= 0) {
+                response.hourly.uvIndex[currentHourIndex]
+            } else {
+                0.0
+            }
+
             val hourly = allHourly
                 .filter { it.time >= cutoff }
                 .take(24)
 
-            CityWeather(current = current, daily = daily, hourly = hourly)
+            CityWeather(
+                current = current,
+                daily = daily,
+                hourly = hourly,
+                currentUvIndex = currentUvIndex
+            )
         }
 }

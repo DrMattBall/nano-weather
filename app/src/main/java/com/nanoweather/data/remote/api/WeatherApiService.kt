@@ -10,8 +10,8 @@ interface WeatherApiService {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("current_weather") currentWeather: Boolean = true,
-        @Query("daily") daily: String = "temperature_2m_max,temperature_2m_min",
-        @Query("hourly") hourly: String = "temperature_2m,precipitation",
+        @Query("daily") daily: String = "temperature_2m_max,temperature_2m_min,uv_index_max",
+        @Query("hourly") hourly: String = "temperature_2m,precipitation,uv_index",
         @Query("forecast_days") forecastDays: Int = 2,
         @Query("timezone") timezone: String = "auto"
     ): WeatherResponseDto
